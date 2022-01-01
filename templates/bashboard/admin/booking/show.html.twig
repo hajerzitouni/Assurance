@@ -1,0 +1,24 @@
+{% extends 'bashboard/base.html.twig' %}
+
+{% block title %}Booking{% endblock %}
+
+{% block body %}
+<div class="card text-center" style="width: 18rem;">
+    <div class="card-body">
+        <h2 class="card-title"> Détails</h2>
+
+        <h3 class="card-subtitle mb-2 text-muted"> Date de jour férié </h3>
+        <p class="card-text"> {{ booking.beginAt ? booking.beginAt|date('Y-m-d H:i:s') : '' }} </p>
+
+        <h3 class="card-subtitle mb-2 text-muted">Titre</h3>
+        <p class="card-text"> {{ booking.title }} </p>
+
+<div class="row" style="margin-left: 50px">
+    <a href="{{ path('booking_edit', {'id': booking.id}) }}" class="btn btn-primary">Edit</a>
+
+        <a> {{ include('bashboard/admin/booking/_delete_form.html.twig') }}</a>
+</div>
+
+    </div>
+</div>
+{% endblock %}

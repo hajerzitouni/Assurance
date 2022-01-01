@@ -1,0 +1,77 @@
+{% extends 'bashboard/base.html.twig' %}
+
+{% block title %}Ajout d'un nouveau utilisateur{% endblock %}
+
+{% block body %}
+  <div class="card">
+    <div class="card-title">
+      <h4>Liste des congés </h4>
+    </div>
+    <div class="card-body">
+      {% for message in app.flashes('notice') %}
+        <div class="alert alert-info flash-notice" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Du</th>
+            <th>Au</th>
+            <th>Nombre de jours</th>
+            <th>Date de la demande</th>
+            <th>statut</th>
+            {% if not is_granted('ROLE_ADMIN') %}
+              <th style=" text-align: center;">Action</th>
+            {% endif %}
+          </tr>
+          </thead>
+          <tbody>
+          {% for l in list %}
+            {% set difference = date(l.startDate).diff(date(l.endDate)).format('%a') %}
+            <tr>
+              <td>{{ l.startDate | date('Y-m-d') }}</td>
+              <td>{{ l.endDate | date('Y-m-d') }}</td>
+              <td>{{ difference }}</td>
+              <td>{{ l.createdAt |date('d-m-Y') }}</td>
+              <td>
+                {% if  l.status == 1 %}
+                  <span class="badge badge-success">
+                      Validé
+                  </span>
+                {% elseif l.status == -1 %}
+                  <span class="badge badge-danger">
+                  Rejetée
+                </span>
+                {% else %}
+                  <span class="badge badge-primary">
+                      encours
+                  </span>
+                {% endif %}
+              </td>
+
+              {% if not is_granted('ROLE_ADMIN') %}
+                <td>
+                  {% if not l.validby is null %}
+                    -
+                  {% else %}
+                    <a href="{{ path('update_holiday_request', { 'id': l.id }) }}"
+                       class="btn btn-info"
+                    >Modifier</a>
+                    <a href="{{ path('holiday_cancel_request', { 'id': l.id }) }}"
+                       class="btn btn-red"
+                       onclick="return confirm('Êtes-vous sûr?')">Annuler</a>
+                  {% endif %}
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+          {{ knp_pagination_render(list) }}
+      </div>
+    </div>
+  </div>
+{% endblock %}

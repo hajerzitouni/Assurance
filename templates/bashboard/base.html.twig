@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <!-- Favicon icon -->
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+  <title>{% block title %}Welcome!{% endblock %}</title>
+  <!-- Bootstrap Core CSS -->
+
+  <link href="{{ asset('assets/css/lib/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('assets/css/lib/calendar2/semantic.ui.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('assets/css/lib/calendar2/pignose.calendar.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('assets/css/lib/owl.carousel.min.css') }}" rel="stylesheet"/>
+  <link href="{{ asset('assets/css/lib/owl.theme.default.min.css') }}" rel="stylesheet"/>
+  <link href="{{ asset('assets/css/helper.css') }}" rel="stylesheet">
+  <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:** -->
+  <!--[if lt IE 9]>
+        {% block stylesheets %}
+            {# {{ encore_entry_link_tags('app') }} #}
+        {% endblock %}
+        <![endif]-->
+
+</head>
+
+
+<body class="fix-header fix-sidebar">
+
+<!-- Main wrapper  -->
+<div id="main-wrapper">
+  <!-- header header  -->
+  <div class="header">
+    <nav class="navbar top-navbar navbar-expand-md navbar-light">
+      <!-- Logo -->
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          <img src="{{ asset('assets/images/logo.jpg') }}" alt="..." height="60">
+        </a>
+
+      </div>
+      <!-- End Logo -->
+      <div class="navbar-collapse">
+        <!-- toggle and nav items -->
+        <ul class="navbar-nav mr-auto mt-md-0">
+          <!-- This is  -->
+          <li class="nav-item"><a class="nav-link nav-toggler hidden-md-up text-muted  " href="javascript:void(0)"><i
+                      class="mdi mdi-menu"></i></a></li>
+          <li class="nav-item m-l-10"><a class="nav-link sidebartoggler hidden-sm-down text-muted  "
+                                         href="javascript:void(0)"><i class="ti-menu"></i></a></li>
+
+          <!-- End Messages -->
+        </ul>
+        <!-- User profile and search -->
+        <ul class="navbar-nav my-lg-0">
+
+
+          <!-- Comment -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-muted text-muted  " href="#" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false"> <i class="fa fa-bell"></i>
+              <div class="notify"><span class="heartbit"></span> <span class="point"></span></div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right mailbox animated zoomIn">
+              <ul>
+                <li>
+                  <div class="drop-title">Notifications</div>
+                </li>
+                <li>
+                  <div class="message-center">
+                    <!-- Message -->
+                    <a href="#">
+                      <div class="btn btn-danger btn-circle m-r-10"><i class="fa fa-link"></i></div>
+                      <div class="mail-contnet">
+                        <h5>This is title</h5> <span class="mail-desc">Just see the my new admin!</span> <span
+                                class="time">9:30 AM</span>
+                      </div>
+                    </a>
+                    <!-- Message -->
+                    <a href="#">
+                      <div class="btn btn-success btn-circle m-r-10"><i class="ti-calendar"></i></div>
+                      <div class="mail-contnet">
+                        <h5>This is another title</h5> <span
+                                class="mail-desc">Just a reminder that you have event</span> <span
+                                class="time">9:10 AM</span>
+                      </div>
+                    </a>
+                  </div>
+                </li>
+                <li>
+                  <a class="nav-link text-center" href="javascript:void(0);"> <strong>Check all notifications</strong>
+                    <i class="fa fa-angle-right"></i> </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <!-- End Comment -->
+          <!-- Profile -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-muted"
+               href="#" data-toggle="dropdown" aria-haspopup="true"
+               aria-expanded="false">
+              Profil
+            </a>
+            <div class="dropdown-menu dropdown-menu-right animated zoomIn">
+              <ul class="dropdown-user">
+                <li><a href="{{ path('app_profile') }}"><i class="ti-user"></i> Mon Compte</a></li>
+                <li><a href="{{ path('app_logout') }}"><i class="fa fa-power-off"></i> Logout</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <!-- End header header -->
+  <!-- Left Sidebar  -->
+  <div class="left-sidebar">
+    <!-- Sidebar scroll-->
+    <div class="scroll-sidebar">
+      <!-- Sidebar navigation-->
+      <nav class="sidebar-nav">
+        <ul id="sidebarnav">
+          <li class="nav-devider"></li>
+          {% if is_granted('ROLE_ADMIN') %}
+            <li><a class="has-arrow" href="#" aria-expanded="false">
+              <span
+                      class="hide-menu"><i class="fa fas fa-users"></i> Gestion des utilisateurs</span></a>
+              <ul aria-expanded="false" class="collapse">
+                <li><a href="{{ path('list_users') }}">Liste des utilisateurs</a></li>
+                <li><a href="{{ path('add_users') }}">Ajout d'un utilisateur</a></li>
+              </ul>
+            </li>
+            <li><a href="{{ path('booking_new') }}"><i class=" fa fas fa-plus-square"></i> Ajouter des jours fériés</a></li>
+            <li><a href="{{ path('list_conge') }}"><i class="fa fa-wpforms"></i> Liste des Congés</a></li>
+            <li><a href="{{ path('booking_calendar') }}"><i class=" fa far fa-calendar"></i> Calendrier</a></li>
+          {% endif %}
+
+          {% if is_granted('ROLE_USER') %}
+            <li><a class="has-arrow" href="#" aria-expanded="false">
+              <span
+                      class="hide-menu"><i class="fa fa-wpforms"></i> Gestion des Congé</span></a>
+              <ul aria-expanded="false" class="collapse">
+                <li><a href="{{ path('holiday_request_add') }}">Demande de congé</a></li>
+                <li><a href="{{ path('holiday_request_list') }}">Liste des congé</a></li>
+              </ul>
+            </li>
+            <li><a class="has-arrow" href="#" aria-expanded="false">
+              <span
+                      class="hide-menu"><i class="fa fa-wpforms"></i> Gestion des Autorisations</span></a>
+              <ul aria-expanded="false" class="collapse">
+                <li><a href="{{ path('authorization_request_add') }}">Demande d'autorisation</a></li>
+                <li><a href="{{ path('authorization_request_list') }}">Liste des autorisations</a></li>
+              </ul>
+            </li>
+          {% endif %}
+
+          {% if is_granted('ROLE_RESPONSABLE') %}
+            <li><a class="has-arrow" href="#" aria-expanded="false">
+              <span
+                      class="hide-menu">Gestion des Congé</span></a>
+              <ul aria-expanded="false" class="collapse">
+                <li><a href="{{ path('holiday_request_add') }}">Demande de congé</a></li>
+                <li><a href="{{ path('holiday_request_list') }}">Liste des mes congés</a></li>
+                <li><a href="{{ path('responsable_list_conge') }}">Validation des congés</a></li>
+                <li><a href="{{ path('responsable_list_autorisations') }}">Validation des autorisations</a></li>
+              </ul>
+            </li>
+          {% endif %}
+
+          {% if is_granted('ROLE_HR') %}
+            <li><a class="has-arrow" href="#" aria-expanded="false">
+              <span
+                      class="hide-menu">Gestion des Congé</span></a>
+              <ul aria-expanded="false" class="collapse">
+                <li><a href="{{ path('hr_list_holiday') }}">Validation des congés</a></li>
+                <li><a href="{{ path('hr_list_autorisations') }}">Validation des autorisations</a></li>
+              </ul>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <!-- End Left Sidebar  -->
+  <!-- Page wrapper  -->
+  <div class="page-wrapper">
+    <!-- Bread crumb -->
+    <div class="row page-titles">
+      <div class="col-md-5 align-self-center">
+        <h3 class="text-primary">Tableau de bord</h3></div>
+      <div class="col-md-7 align-self-center">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item active">Tableau de bord</li>
+        </ol>
+      </div>
+    </div>
+    <div class="container-fluid">
+      {% block body %}{% endblock %}
+    </div>
+
+  </div>
+</div>
+<script src="{{ asset('assets/js/lib/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/js/lib/bootstrap/js/popper.min.js') }}"></script>
+<script src="{{ asset('assets/js/lib/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.slimscroll.js') }}"></script>
+<script src="{{ asset('assets/js/sidebarmenu.js') }}"></script>
+<script src="{{ asset('assets/js/scripts.js') }}"></script>
+<script src="{{ asset('assets/js/custom.min.js') }}"></script>
+{% block javascripts %}
+{% endblock %}
+
+</body>
+</html>

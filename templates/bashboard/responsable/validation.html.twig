@@ -1,0 +1,103 @@
+{% extends 'bashboard/base.html.twig' %}
+
+{% block title %}Validation des congés{% endblock %}
+
+{% block body %}
+  <div class="card">
+    <div class="card-title">
+      <h4>Validation des congés </h4>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Nom & Prénom</th>
+            <th>Du</th>
+            <th>Au</th>
+            <th>Nombre de jours</th>
+            <th>Date de la demande</th>
+
+            <th>statut</th>
+            <th>description</th>
+            {% if not is_granted('ROLE_ADMIN') %}
+              <th style=" text-align: center;">Action</th>
+            {% endif %}
+
+
+          </tr>
+          </thead>
+          <tbody>
+          {% for l in list %}
+            {% set difference = date(l.startDate).diff(date(l.endDate)).format('%a') %}
+            <tr>
+              <th scope="row">{{ l.userId.firstName  }} {{ l.userId.lastName  }}</th>
+              <td>{{ l.startDate | date('d-m-Y') }}</td>
+              <td>{{ l.endDate | date('d-m-Y') }}</td>
+              <td style=" text-align: center;   ">{{ difference }}</td>
+              <td>{{ l.createdAt |date('d-m-Y') }}</td>
+              <td>
+                {% if  l.status == 1 %}
+                  <span class="badge badge-success">
+                      Validé
+                  </span>
+                {% elseif l.status == -1 %}
+                  <span class="badge badge-danger">
+                  Rejetée
+                </span>
+                {% else %}
+                  <span class="badge badge-primary">
+                      encours
+                  </span>
+                {% endif %}
+              </td>
+              <td>
+                {{ l.description }}
+              </td>
+              <!--<td>
+                {% if not l.validby is null %}
+                  Validation Responsable({{ l.validby.firstName }})
+                {% else %}
+                  -
+                {% endif %}
+
+              </td>-->
+              {% if not is_granted('ROLE_ADMIN') %}
+                <td>
+                  {% if not l.validby is null %}
+                    -
+                  {% else %}
+
+                    <a href="{{ path('confirm_request', { 'id': l.id , 'action': 'valide', 'route': routeName }) }}"
+                       class="btn btn-info"
+                       onclick="return confirm('Êtes-vous sûr?')">Valider</a>
+                    <a href="{{ path('confirm_request', { 'id': l.id, 'action': 'annuler', 'route': routeName }) }}"
+                       class="btn btn-red"
+                       onclick="return confirm('Êtes-vous sûr?')">Annuler</a>
+
+
+
+
+
+
+
+
+
+
+
+                      {% endif %}
+
+
+
+
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {{ knp_pagination_render(list) }}
+      </div>
+    </div>
+  </div>
+{% endblock %}

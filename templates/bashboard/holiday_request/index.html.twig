@@ -1,0 +1,185 @@
+{% extends 'bashboard/base.html.twig' %}
+
+
+{% block title %}Ajout d'un nouveau utilisateur
+{% endblock %}
+
+{% block stylesheets %}
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+{% endblock %}
+{% block body %}
+
+
+  <div class="card">
+    <div class="card-title">
+      <h4>Demande de congé</h4>
+    </div>
+    <div class="card-body">
+      <div class="row">
+      <div class="col-md-8">
+
+        {% for message in app.flashes('notice') %}
+          <div class="alert alert-info flash-notice" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+
+        <div class="basic-form">
+          {{ form_start(form) }}
+          <div class="my-custom-class-for-errors">
+            {{ form_errors(form) }}
+          </div>
+
+          <div class="form-group">
+            {{ form_row(form.startDate, {'attr': {'class': 'form-control input-default'}}) }}
+          </div>
+          <div class="form-group">
+            {{ form_row(form.endDate, {'attr': {'class': 'form-control input-default'}}) }}
+          </div>
+          <div class="form-group">
+            <label for="day">Nombre de jours</label>
+            <input type="text" readonly id="day" class="form-control input-default js-days"/>
+          </div>
+          {{ form_end(form) }}
+        </div>
+
+      </div>
+      <div class="col-md-3">
+      <div class="container" style="margin-left: 20px; margin-top:50px"->
+        <div class="row">
+          <div class="span12">
+            <table class="table-condensed table-bordered table-striped">
+              <thead>
+              <tr>
+                <th colspan="7">
+                        <span class="btn-group">
+                            <a class="btn"><i class="icon-chevron-left"></i></a>
+                        	<a class="btn active">January 2022</a>
+                        	<a class="btn"><i class="icon-chevron-right"></i></a>
+                        </span>
+                </th>
+              </tr>
+              <tr>
+                <th>Su</th>
+                <th>Mo</th>
+                <th>Tu</th>
+                <th>We</th>
+                <th>Th</th>
+                <th>Fr</th>
+                <th>Sa</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="muted">29</td>
+                <td class="muted">30</td>
+                <td class="muted">31</td>
+                <td class="btn-primary"><strong>1</strong></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+                <td>8</td>
+                <td>9</td>
+                <td>10</td>
+                <td>11</td>
+              </tr>
+              <tr>
+                <td>12</td>
+                <td>13</td>
+                <td>14</td>
+                <td>15</td>
+                <td>16</td>
+                <td>17</td>
+                <td>18</td>
+              </tr>
+              <tr>
+                <td>19</td>
+                <td>20</td>
+                <td>21</td>
+                <td>22</td>
+                <td>23</td>
+                <td>24</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>26</td>
+                <td>27</td>
+                <td>28</td>
+                <td>29</td>
+                <td class="muted">1</td>
+                <td class="muted">2</td>
+                <td class="muted">3</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+
+    </div>
+    </div>
+  </div>
+
+{% endblock %}
+  {% block javascripts %}
+    <script>
+      function getBusinessDatesCount(startDate, endDate) {
+        let count = 0;
+        const curDate = new Date(startDate.getTime());
+        while (curDate <= endDate) {
+          const dayOfWeek = curDate.getDay();
+          if(dayOfWeek !== 0 && dayOfWeek !== 6) count++;
+          curDate.setDate(curDate.getDate() + 1);
+        }
+        alert(count);
+        return count;
+      }
+      function diffDate() {
+        let startDate = document.getElementById('holiday_request_startDate')
+        let endtDate = document.getElementById('holiday_request_endDate')
+        let diffDays = 0
+        let date1 = new Date(startDate.value)
+        let date2 = new Date(endtDate.value)
+
+        if (
+        startDate.value !== '' &&
+          endtDate.value !== ''
+     ) {
+        //  let date1 = new Date(startDate.value)
+          //let date2 = new Date(endtDate.value)
+          //   const diffTime = Math.abs(date2 - date1)
+           // diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+            // while (date1 <= date2) {
+           //  if (date1.getDay() !== 0 && date1.getDay() !== 6) {
+          //  diffDays++;
+           // date1 = date1.addDays(1)
+            //console.log("hi",diffDays);
+
+            // }
+            //date1 = date1.addDays(1);
+          //}
+
+          //return diffDays
+         // const diffTime=calcBusinessDays(date1, date2)
+         // diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+       // }
+          diffDays= getBusinessDatesCount(date1,date2) }
+        document.getElementById('day').value = diffDays
+      }
+
+      document.addEventListener('DOMContentLoaded', (event) => {
+        diffDate()
+      })
+      document.getElementById('holiday_request_startDate').addEventListener('change', diffDate)
+      document.getElementById('holiday_request_endDate').addEventListener('change', diffDate)
+    </script>
+  {% endblock %}

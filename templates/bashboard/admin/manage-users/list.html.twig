@@ -1,0 +1,65 @@
+{% extends 'bashboard/base.html.twig' %}
+
+{% block title %}Ajout d'un nouveau utilisateur{% endblock %}
+
+{% block body %}
+
+
+
+  <div class="card">
+    <div class="card-title">
+      <h4>Liste des Utilisateurs </h4>
+
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Nom & Prénom</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Departement</th>
+            <th> Solde Congé </th>
+
+            <th style=" text-align: center;">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for l in list %}
+            <tr>
+              <td>
+                {{ l.firstName }} {{ l.lastName }}
+              </td>
+              <td>
+                {{ l.email }}
+              </td>
+              <td>
+                {{ l.roles[0] }}
+              </td>
+              <td>
+                {{ l.departement }}
+              </td>
+              <td  style=" text-align: center;">
+                {{ l.soldecong }}
+              </td>
+              <td>
+                <a href="{{ path('modifer_user', { 'id': l.id }) }}" class="btn btn-info"
+                   onclick="return confirm('Êtes-vous sûr?')"
+                >Modifer</a>
+                <a href="{{ path('remove_user', { 'id': l.id }) }}" class="btn btn-red"
+                   onclick="return confirm('Êtes-vous sûr?')"
+                >Supprimer</a>
+              </td>
+            </tr>
+          {% endfor %}
+
+          </tbody>
+
+        </table>
+        {{ knp_pagination_render(list) }}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
