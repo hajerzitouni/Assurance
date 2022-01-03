@@ -146,7 +146,6 @@ class ResponsableController extends AbstractController
                 $holidayRequest = $form->getData();
                 $em = $this->getDoctrine()->getManager();
 
-                $holidayRequest->setUserId($this->getUser());
 
                 $em->persist($holidayRequest);
                 $em->flush();

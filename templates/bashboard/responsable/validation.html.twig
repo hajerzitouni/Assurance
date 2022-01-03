@@ -34,7 +34,7 @@
               <th scope="row">{{ l.userId.firstName  }} {{ l.userId.lastName  }}</th>
               <td>{{ l.startDate | date('d-m-Y') }}</td>
               <td>{{ l.endDate | date('d-m-Y') }}</td>
-              <td style=" text-align: center;   ">{{ difference }}</td>
+              <td style=" text-align: center;   ">{{ l.nbjours}}</td>
               <td>{{ l.createdAt |date('d-m-Y') }}</td>
               <td>
                 {% if  l.status == 1 %}

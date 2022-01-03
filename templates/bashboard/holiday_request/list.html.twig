@@ -23,6 +23,7 @@
             <th>Nombre de jours</th>
             <th>Date de la demande</th>
             <th>statut</th>
+              <th>Description</th>
             {% if not is_granted('ROLE_ADMIN') %}
               <th style=" text-align: center;">Action</th>
             {% endif %}
@@ -34,7 +35,7 @@
             <tr>
               <td>{{ l.startDate | date('Y-m-d') }}</td>
               <td>{{ l.endDate | date('Y-m-d') }}</td>
-              <td>{{ difference }}</td>
+              <td>{{ l.nbjours }}</td>
               <td>{{ l.createdAt |date('d-m-Y') }}</td>
               <td>
                 {% if  l.status == 1 %}
@@ -51,6 +52,7 @@
                   </span>
                 {% endif %}
               </td>
+                <td> {{ l.description }}</td>
 
               {% if not is_granted('ROLE_ADMIN') %}
                 <td>

@@ -13,14 +13,14 @@ class BookingRepository extends ServiceEntityRepository
         parent::__construct($registry, Booking::class);
     }
 
-    public  function findBydate($id){
+    public  function findBydate($m){
         /*  $query= $this->getEntityManager()->createQueryBuilder()
           ->select('p')->from('ecommerceBundle:Panier','p')->where('p.user_id= :user')->setParameter('user',"%{$user}%");
 
               return $query->getResult();
   */
 
-        $query = $this->getEntityManager()->createQuery("SELECT b FROM  App\Entity\Booking AS b WHERE b.beginAt=:id")->setParameter('id',$id);
+        $query = $this->getEntityManager()->createQuery("SELECT b FROM  App\Entity\Booking AS b WHERE  MONTH (b.beginAt)=:m")->setParameter('m',$m);
 
 
         try {

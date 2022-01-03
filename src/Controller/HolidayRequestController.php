@@ -71,13 +71,13 @@ class HolidayRequestController extends AbstractController
                 $days += $star->format('N') < 6 ? 1 : 0;
                 $star = $star->add(new \DateInterval("P1D"));
             }*/
-            $holidayRequest->setNbjours($days);
+            /*$holidayRequest->setNbjours($days);
             foreach ($list as $event) {
                 //  echo('hello');
                 $ee = $event->getBeginAt();
                 $data = ['hello' => 'world'];
                 var_dump('vardump', $data);
-            }
+            }*/
             // echo $e->format('H:i:s \O\n Y-m-d');
 
             // $logger = new ConsoleLogger($e);
@@ -138,58 +138,86 @@ class HolidayRequestController extends AbstractController
                     'Votre demande de congé a été enregistré avec succès!'
                 );
 
-
+                $holidayRequest->setNbjours($days);
                 $em->persist($holidayRequest);
                 $em->flush();
+                $p = $star->format('m');
 
-                $list = $this->getDoctrine()
-                    ->getRepository(Booking::class)->findAll();
-                foreach ($list as $event) {
-                    //  echo('hello');
-                    $ee = $event->getBeginAt()->format('Y-m-d');
-                    $s = $star->format('Y-m-d');
-                    $e = $end->format('Y-m-d');
-                    $data = ['hello' => 'world'];
-                    if ($ee >= $s && $ee <= $e) {
-                        $a = "between";
-                        while ($star->diff($end)->days > 0) {
-                            $days += $star->format('N') < 6 ? 1 : 0;
-                            $star = $star->add(new \DateInterval("P1D"));
+                $a = $this->getDoctrine()
+                    ->getRepository(Booking::class)->findBydate($p);
+                if(!empty($a)) {
+                    $m = $a->getBeginAt()->format('Y-m-d');
+
+
+                    //foreach ($list as $event) {
+
+
+                       // $ee = $event->getBeginAt()->format('Y-m-d');
+                        $s = $star->format('Y-m-d');
+
+                        $e = $end->format('Y-m-d');
+
+
+                       // $data = ['hello' => 'world'];
+                        if ($m >= $s && $m <= $e) {
+                            $a = "between";
+                            while ($star->diff($end)->days > 0) {
+                                $days += $star->format('N') < 6 ? 1 : 0;
+                                $star = $star->add(new \DateInterval("P1D"));
+                            }
+                            $holidayRequest->setNbjours($days - 1);
+                            $userId = $holidayRequest->getUserId();
+                            $user = $this->getDoctrine()
+                                ->getRepository(User::class)->find($userId);
+                            $solde = $user->getSoldecong();
+                            $user->setSoldecong($solde - ($days - 1));
+                            $em->persist($user);
+                            $em->flush();
+                        } else {
+                            $a = "no";
+                            while ($star->diff($end)->days > 0) {
+                                $days += $star->format('N') < 6 ? 1 : 0;
+                                $star = $star->add(new \DateInterval("P1D"));
+                            }
+                            $holidayRequest->setNbjours($days);
+                            $userId = $holidayRequest->getUserId();
+                            $user = $this->getDoctrine()
+                                ->getRepository(User::class)->find($userId);
+                            $solde = $user->getSoldecong();
+                            $user->setSoldecong($solde - $days);
+                            $em->persist($user);
+                            $em->flush();
                         }
-                        $holidayRequest->setNbjours($days - 1);
-                        $userId = $holidayRequest->getUserId();
-                        $user = $this->getDoctrine()
-                            ->getRepository(User::class)->find($userId);
-                        $solde = $user->getSoldecong();
-                        $user->setSoldecong($solde - $days-1);
-                        $em->persist($user);
+
+
+                      //  var_dump('vardump', $data);
+
+
+                        $em->persist($holidayRequest);
                         $em->flush();
-                    } else {
-                        $a = "no";
-                        while ($star->diff($end)->days > 0) {
-                            $days += $star->format('N') < 6 ? 1 : 0;
-                            $star = $star->add(new \DateInterval("P1D"));
-                        }
-                        $holidayRequest->setNbjours($days);
-                        $userId = $holidayRequest->getUserId();
-                        $user = $this->getDoctrine()
-                            ->getRepository(User::class)->find($userId);
-                        $solde = $user->getSoldecong();
-                        $user->setSoldecong($solde - $days);
-                        $em->persist($user);
-                        $em->flush();
+
+
+                        return $this->redirectToRoute('holiday_request_add', array( 'star' => $s, 'result' => $a, 'm' => $m));
+
+
+
+                }
+                else{
+
+                    while ($star->diff($end)->days > 0) {
+                        $days += $star->format('N') < 6 ? 1 : 0;
+                        $star = $star->add(new \DateInterval("P1D"));
                     }
-
-
-                    var_dump('vardump', $data);
-
+                    $holidayRequest->setNbjours($days);
                     $em->persist($holidayRequest);
                     $em->flush();
 
 
-                    return $this->redirectToRoute('holiday_request_add', array('e' => $ee, 'star' => $s, 'result' => $a));
+                    return $this->redirectToRoute('holiday_request_add');
+
 
                 }
+
             }
             else{
                 $this->addFlash(
@@ -227,6 +255,29 @@ class HolidayRequestController extends AbstractController
         );
 
         return $this->render('bashboard/holiday_request/list.html.twig', [
+            'list' => $list,
+        ]);
+    }
+
+    /**
+     * @Route("/holiday-request/mylist", name="holiday_request_mylist")
+     */
+    public function show1(Request $request, PaginatorInterface $paginator): Response
+    {
+        $articles = $this->getDoctrine()
+            ->getRepository(HolidayRequest::class)
+            ->findBy([
+                'user_id' => $this->getUser()->getId(),
+
+
+            ]);
+        $list= $paginator->paginate(
+            $articles, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            3 // Nombre de résultats par page
+        );
+
+        return $this->render('bashboard/holiday_request/mylist.html.twig', [
             'list' => $list,
         ]);
     }
